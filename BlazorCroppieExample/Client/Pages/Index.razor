@@ -1,0 +1,55 @@
+﻿@page "/"
+@inject IJSRuntime JS
+@inject IHttpClientFactory ClientFactory
+@using BlazorCroppieExample.Shared
+<PageTitle>Index</PageTitle>
+
+<div class="form-group">
+    <div class="custom-file">
+        <input id="upload" accept="image/*" type="file" class="custom-file-input" @onchange="Upload">
+        <label for="upload" class="custom-file-label">Выберите или перетащите изображение</label>
+    </div>
+</div>
+
+<div class="upload-demo">
+    <div class="upload-msg">Определите видимую часть:</div>
+    <div class="upload-demo-wrap">
+        <div id="upload-demo"></div>
+    </div>
+</div>
+
+<button class="upload-result" @onclick="Up">Abr</button>
+<div id="result"></div>
+<img id="result-img" src="">
+
+
+@code {
+
+    FileUpload model { get; set; } = new();    
+    HttpClient NoAuthenticationClient;
+
+    async Task Upload()
+    {
+        await JS.InvokeVoidAsync("Crop.image", DotNetObjectReference.Create(this));
+    }
+
+    async Task Up()
+    {
+        await JS.InvokeVoidAsync("Crop.responses", DotNetObjectReference.Create(this));
+    }
+
+    [JSInvokable]
+    public async void ResponseMethod(string data)
+    {
+        model.Avatar = data;
+        await UploadServer();
+        StateHasChanged();
+    }
+
+    async Task UploadServer()
+    {
+        NoAuthenticationClient = ClientFactory.CreateClient("BlazorCroppieExample.NoAuthenticationClient");
+        await NoAuthenticationClient.PostAsJsonAsync<FileUpload>("WeatherForecast", model);
+    }
+
+}

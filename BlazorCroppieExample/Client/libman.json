@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "croppie@2.6.5",
+      "destination": "wwwroot/croppie/",
+      "files": [
+        "croppie.min.js",
+        "croppie.css",
+        "croppie.js",
+        "croppie.min.css"
+      ]
+    }
+  ]
+}
